@@ -324,6 +324,7 @@ class BaseThermostat(ClimateEntity, RestoreEntity, Generic[T]):
         self._last_seen_temp_sensor_entity_id = entry_infos.get(
             CONF_LAST_SEEN_TEMP_SENSOR
         )
+        self._humidity_sensor_entity_id = entry_infos.get(CONF_HUMIDITY_SENSOR)
         self._ext_temp_sensor_entity_id = entry_infos.get(CONF_EXTERNAL_TEMP_SENSOR)
 
         self._tpi_coef_int = entry_infos.get(CONF_TPI_COEF_INT)
@@ -501,6 +502,18 @@ class BaseThermostat(ClimateEntity, RestoreEntity, Generic[T]):
             )
             await self._async_update_temp(temperature_state)
             need_write_state = True
+
+        if self._humidity_sensor_entity_id:
+            humidity_state = self.hass.states.get(self._temp_sensor_entity_id)
+            if humidity_state and humidity_state.state not in (
+                STATE_UNAVAILABLE,
+                STATE_UNKNOWN,
+            ):
+                _LOGGER.debug(
+                    "%s - humidity sensor have been retrieved: %.1f",
+                    self,
+                    float(humidity_state.state),
+                )
 
         if self._ext_temp_sensor_entity_id:
             ext_temperature_state = self.hass.states.get(

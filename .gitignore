@@ -113,3 +113,5 @@ custom_components/localtuya
 
 .coverage
 htmlcov
+
+.history
