@@ -524,6 +524,7 @@ class BaseThermostat(ClimateEntity, RestoreEntity, Generic[T]):
                     self,
                     float(humidity_state.state),
                 )
+                await self._async_update_humidity(humidity_state)
 
         if self._ext_temp_sensor_entity_id:
             ext_temperature_state = self.hass.states.get(
